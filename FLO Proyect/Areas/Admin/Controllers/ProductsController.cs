@@ -14,10 +14,10 @@ namespace FLO_Proyect.Areas.Admin.Controllers
             appdbContext = _appdbContext;
         }
 
-        
+
         public IActionResult Index()
         {
-          return View(appdbContext.Products.Include(x => x.Category).ToList());
+            return View(appdbContext.Products.Include(x => x.Category).ToList());
         }
 
         public IActionResult Create()
@@ -48,6 +48,20 @@ namespace FLO_Proyect.Areas.Admin.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        public IActionResult Edit(Products products)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(products);
+            }
+            appdbContext.Products.Update(products);
+            appdbContext.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
 
         public JsonResult Delete(int id)
         {

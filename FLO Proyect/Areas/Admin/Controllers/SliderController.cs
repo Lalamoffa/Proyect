@@ -66,7 +66,7 @@ namespace FLO_Proyect.Areas.Admin.Controllers
             var slider = context.Sliders.Find(id);
             if (slider != null)
             {
-                slider.Ischeck = true;
+                context.Sliders.Remove(slider);
                 context.SaveChanges();
             }
 
@@ -77,24 +77,19 @@ namespace FLO_Proyect.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public JsonResult Edit(int id)
+        public IActionResult Edit(int id)
         {
             if (id == 0)
             {
-                return Json(new
-                {
-                    Status = 400
-                });
+                return NotFound();
             }
+
             var model = context.Sliders.FirstOrDefault(x => x.Id == id);
             if (model == null)
             {
-                return Json(new
-                {
-                    Status = 400
-                });
+                return RedirectToAction("GetSliders");
             }
-            return Json( model);
+            return View(model);
         }
 
 

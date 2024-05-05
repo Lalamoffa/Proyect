@@ -2,7 +2,7 @@
 
 namespace FLO_Proyect.ViewModel
 {
-    public class LoginVM
+    public class RegisterVM
     {
         [Required]
         [EmailAddress]
@@ -11,6 +11,8 @@ namespace FLO_Proyect.ViewModel
         public string Password { get; set; }
         [Required]
         [Compare("Password")]
+        public string ConfirmPasword { get; set; }
         public bool IsRemember { get; set; }
+        public string Name { get; set; }
     }
 }

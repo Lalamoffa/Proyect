@@ -15,20 +15,20 @@ namespace FLO_Proyect.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            return View(appdbContext.Categories.ToList());  
+            return View(appdbContext.Categories.ToList());
         }
 
-        public IActionResult Create (Category category)
+        public IActionResult Create(Category category)
         {
             if (ModelState.IsValid)
             {
                 return View(category);
             }
 
-                appdbContext.Categories.Add(category);
-                appdbContext.SaveChanges();
-                return RedirectToAction("Index");
-            
+            appdbContext.Categories.Add(category);
+            appdbContext.SaveChanges();
+            return RedirectToAction("Index");
+
         }
 
         public JsonResult Delete(int id)

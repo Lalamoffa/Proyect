@@ -137,7 +137,35 @@
             });
         });
 
+        $(document).ready(() => {
+            //Edit(Get)
+            $(document).on('click', '.editBtn', (e) => {
+                const id = $(e.currentTarget).data('id');
 
+                $.ajax({
+                    url: `/Admin/Slider/Edit/${id}`,
+                    type: 'GET',
+                    success: (response) => {
+                        console.log(response)
+                        if (response.hasOwnProperty('status') && response.status === 400) {
+                            alert('tapilmadi');
+                        }
+                        else {
+                            console.log(response);
+                            $('#SliderEditForm input[name="Id"]').val(response.id);
+                            $('#SliderEditForm input[name="Title"]').val(response.Title);
+                            $('#SliderEditForm input[name="Description"]').val(response.description);
+                            $('#SliderEditForm input[name="Price"]').val(response.price);
+                            $('#SliderEditForm input[name="Category"]').val(response.category);
+
+
+                        }
+                    }
+                });
+            });
+
+
+        });
 
     </script>
 }

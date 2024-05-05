@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FLO_Proyect.Models
 {
-    public class AppdbContext: IdentityDbContext<ProgramUser>
+    public class AppdbContext : IdentityDbContext<ProgramUser>
     {
-        public AppdbContext(DbContextOptions options) :base(options) 
+        public AppdbContext(DbContextOptions<AppdbContext> options) : base(options)
         {
         }
         public DbSet<Slider> Sliders { get; set; }

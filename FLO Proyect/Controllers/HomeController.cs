@@ -29,7 +29,7 @@ namespace FLO_Proyect.Controllers
             //};
 
          
-            return View(context.Sliders.Where(x=>x.Ischeck!=true).ToList());
+            return View(context.Sliders.Where(x=>x.Ischeck!=false).ToList());
         }
 
         public IActionResult Privacy()

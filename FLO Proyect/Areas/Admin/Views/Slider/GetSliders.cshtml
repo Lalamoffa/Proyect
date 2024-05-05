@@ -7,11 +7,7 @@
 
 
 <div class="page-content">
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Modal Add
-    </button>
-
+  
     <div class="container-fluid">
 
         <!-- start page title -->
@@ -66,9 +62,9 @@
                                         </td>
                                         <td>
                                             <a class="deleteBtn btn btn-danger" asp-area="Admin" asp-controller="Slider" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                            <button data-id="@item.Id" type="button" class="editBtn btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
-                                                Edit
-                                            </button>
+                                            <a class=" btn btn-danger mt-3" asp-area="Admin" asp-controller="Slider" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+
+                                             
                                         </td>
                                     </tr>
                                 }
@@ -87,105 +83,6 @@
 
     </div>
 </div><!-- End Page-content -->
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Create Slider</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="SliderCreateForm" class="row" method="post" asp-area="Admin" asp-controller="Slider" asp-action="Create">
-                    @Html.AntiForgeryToken()
-                    <div class="col-md-12">
-                        <label>
-                            SubTitle
-                        </label>
-                        <input name="SubTitle" type="text" class="form-control" />
-                        @* <span asp-validation-for="SubTitle" class="text-danger"></span> *@
-                    </div>
-
-                    <div class="col-md-12">
-                        <label>
-                            Title
-                        </label>
-                        <input name="Title" type="text" class="form-control" />
-                        @*  <span asp-validation-for="Title" class="text-danger"></span> *@
-                    </div>
-
-
-                    <div class="col-md-12">
-                        <label>
-                            Description
-                        </label>
-                        <input name="Description" type="text" class="form-control" />
-                        @* <span asp-validation-for="Description" class="text-danger"></span> *@
-                    </div>
-
-                    <div class="col-md-12">
-                        <label>
-                            Image
-                        </label>
-                        <input name="ImgUrl" type="file" class="form-control" />
-                    </div>
-
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button form="SliderCreateForm" type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- ModalEdit -->
-
-<div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalEditLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalEditLabel">Edit Slider</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="SliderEditForm" class="row" method="post" asp-area="Admin" asp-controller="Slider" asp-action="Edit">
-                    @Html.AntiForgeryToken()
-                    <div class="col-md-12">
-                        <input name="Id" type="hidden" class="form-control" />
-                        <label>
-                            SubTitle
-                        </label>
-                        <input name="SubTitle" type="text" class="form-control" />
-                    </div>
-
-                    <div class="col-md-12">
-                        <label>
-                            Title
-                        </label>
-                        <input name="Title" type="text" class="form-control" />
-                    </div>
-
-                    <div class="col-md-12">
-                        <label>
-                            Description
-                        </label>
-                        <input name="Description" type="text" class="form-control" />
-                    </div>
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button form="SliderEditForm" type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-
-        </div>
-    </div>
-</div>
 
 @section Scripts {
 
@@ -240,33 +137,33 @@
             });
         });
 
-        $(document).ready(() => {
-            //Edit(Get)
-            $(document).on('click', '.editBtn', (e) => {
-                const id = $(e.currentTarget).data('id');
+        // $(document).ready(() => {
+        //     //Edit(Get)
+        //     $(document).on('click', '.editBtn', (e) => {
+        //         const id = $(e.currentTarget).data('id');
 
-                $.ajax({
-                    url: `/Admin/Slider/Edit/${id}`,
-                    type: 'GET',
-                    success: (response) => {
-                        console.log(response)
-                        if (response.hasOwnProperty('status') && response.status === 400) {
-                            alert('tapilmadi');
-                        }
-                        else {
-                            console.log(response);
-                            $('#SliderEditForm input[name="Id"]').val(response.id);
-                            $('#SliderEditForm input[name="SubTitle"]').val(response.subTitle);
-                            $('#SliderEditForm input[name="Description"]').val(response.description);
-                            $('#SliderEditForm input[name="Title"]').val(response.title);
+        //         $.ajax({
+        //             url: `/Admin/Slider/Edit/${id}`,
+        //             type: 'GET',
+        //             success: (response) => {
+        //                 console.log(response)
+        //                 if (response.hasOwnProperty('status') && response.status === 400) {
+        //                     alert('tapilmadi');
+        //                 }
+        //                 else {
+        //                     console.log(response);
+        //                     $('#SliderEditForm input[name="Id"]').val(response.id);
+        //                     $('#SliderEditForm input[name="SubTitle"]').val(response.subTitle);
+        //                     $('#SliderEditForm input[name="Description"]').val(response.description);
+        //                     $('#SliderEditForm input[name="Title"]').val(response.title);
 
-                        }
-                    }
-                });
-            });
+        //                 }
+        //             }
+        //         });
+        //     });
 
 
-        });
+        // });
 
 
     </script>
