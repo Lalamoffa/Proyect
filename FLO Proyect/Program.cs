@@ -8,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppdbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"));
+});
 
 builder.Services.AddIdentity<ProgramUser, IdentityRole>()
     .AddEntityFrameworkStores<AppdbContext>()
@@ -31,6 +33,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedPhoneNumber = false; //telefon doğrulaması
 });
 
+builder.Services.AddScoped<FLO_Proyect.Extensions.IEmailService, FLO_Proyect.Extensions.EmailSender>();
 
 var app = builder.Build();
 

@@ -13,6 +13,5 @@ namespace FLO_Proyect.ViewModel
         [Compare("Password")]
         public string ConfirmPasword { get; set; }
         public bool IsRemember { get; set; }
-        public string Name { get; set; }
     }
 }

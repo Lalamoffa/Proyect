@@ -1,4 +1,5 @@
-﻿using FLO_Proyect.Models;
+﻿using FLO_Proyect.Extensions;
+using FLO_Proyect.Models;
 using FLO_Proyect.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +11,21 @@ namespace FLO_Proyect.Controllers
         private readonly AppdbContext appDbContext;
         private readonly UserManager<ProgramUser> _userManager;
         private readonly SignInManager<ProgramUser> _signInManager;
+        private readonly IEmailService emailService;
 
-        public AccountController(AppdbContext _appDbContext, UserManager<ProgramUser> userManager, SignInManager<ProgramUser> signInManager)
+
+        public AccountController(AppdbContext _appDbContext, UserManager<ProgramUser> userManager, SignInManager<ProgramUser> signInManager, IEmailService _emailService)
         {
             appDbContext = _appDbContext;
             _userManager = userManager;
             _signInManager = signInManager;
+            emailService = _emailService;
         }
         public IActionResult Register()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<ActionResult> Register(RegisterVM model)
         {
@@ -37,7 +42,11 @@ namespace FLO_Proyect.Controllers
             var result = await _userManager.CreateAsync(programUser, model.Password);
             if (result.Succeeded)
             {
-                RedirectToAction("Index", "Home");
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(programUser);
+                var confirmationLink = Url.Action("Index", "Home", new { userId = programUser.Id, token = token }, Request.Scheme);
+                await emailService.SendEmailAsync(model.Email, "Confirm your email", $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>.");
+
+                return RedirectToAction("Index", "Home");
             }
             foreach (var item in result.Errors)
             {
