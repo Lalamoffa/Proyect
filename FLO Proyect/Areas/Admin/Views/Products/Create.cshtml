@@ -53,6 +53,22 @@
                                 <span asp-validation-for="Price" class="text-danger"></span>
                             </div>
 
+
+                            <div class="col-md-3">
+                                <label>
+                                    Esas sekil
+                                </label>
+                                <input asp-for="ImgUrlBaseFile" type="file" class="form-control" />
+                            </div>
+
+
+                            <div class="col-md-3">
+                                <label>
+                                    Elave sekiller
+                                </label>
+                                <input asp-for="ImagesFile" type="file" class="form-control" multiple />
+                            </div>
+
                             <div class="col-md-3">
                                 <label>
                                     Category
@@ -64,13 +80,7 @@
                                     }
                                     
                                 </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label>
-                                    Image
-                                </label>
-                                <input asp-for="ImgFile" type="file" class="form-control" />
-                            </div>
+                            
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-danger mt-3">Add database</button>
                             </div>

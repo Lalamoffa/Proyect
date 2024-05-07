@@ -31,7 +31,7 @@ namespace FLO_Proyect.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Products model)
+        public async Task<IActionResult> CreateAsync(Products model)
         {
 
             if (!ModelState.IsValid)
@@ -40,6 +40,38 @@ namespace FLO_Proyect.Areas.Admin.Controllers
                 return View(model);
             }
 
+
+            //TEK SEKILIN BAZAYA HEMDE PAPKAYA YUKLENMESI
+            if (!model.ImgUrlBaseFile.IsImage())
+            {
+                ModelState.AddModelError("Photo", "Image type is not valid");
+                return View(model);
+            }
+            string filename = await model.ImgUrlBaseFile.SaveFileAsync(_env.WebRootPath, "UploadProducts");
+
+            model.ImgUrlBase = filename;
+
+            appdbContext.Products.Add(model);
+            appdbContext.SaveChanges();
+
+            if (model.ImagesFile != null)
+            {
+                foreach (var item in model.ImagesFile)
+                {
+                    if (!item.IsImage())
+                    {
+                        ModelState.AddModelError("Photo", "Image type is not valid");
+                        return View(model);
+                    }
+                    string filename2 = await item.SaveFileAsync(_env.WebRootPath, "uploadProducts");
+
+                    Images images = new Images
+                    {
+                        ProductId = model.Id,
+                        ImgUrl = filename2
+                    };
+                }
+            }
             appdbContext.Products.Add(model);
             appdbContext.SaveChanges();
             return RedirectToAction("Index");
