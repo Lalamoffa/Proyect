@@ -15,12 +15,14 @@ namespace FLO_Proyect.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            return View(appdbContext.Categories.ToList());
+            return View(appdbContext.Categories.Where(x => x.Ischeck == true).ToList());
         }
 
+
+        [HttpPost]
         public IActionResult Create(Category category)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(category);
             }
@@ -43,7 +45,7 @@ namespace FLO_Proyect.Areas.Admin.Controllers
             var category = appdbContext.Categories.Find(id);
             if (category != null)
             {
-                appdbContext.Categories.Remove(category);
+                category.Ischeck = false;
                 appdbContext.SaveChanges();
             }
 

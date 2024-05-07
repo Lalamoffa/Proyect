@@ -1,14 +1,14 @@
 ﻿@model List<Products>
+
 @section Styles {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.min.css" rel="stylesheet" />
 
 }
 
+
 <div class="page-content">
 
     <div class="container-fluid">
-
-        <a class="btn btn-success mb-3" asp-area="Admin" asp-controller="Products" asp-action="Create">Create new Products</a>
 
         <!-- start page title -->
         <div class="row">
@@ -28,6 +28,7 @@
         </div>
         <!-- end page title -->
 
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card job-filter">
@@ -39,6 +40,7 @@
                                     <th scope="col">Description</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Category</th>
+                                    <th scope="col">Img</th>
                                     <th scope="col">Operation</th>
 
                                 </tr>
@@ -57,13 +59,16 @@
                                             @item.Price
                                         </td>
                                         <td>
-                                            @item.Category.Name
+                                            @item.Category
+                                        </td>
+                                        <td>
+                                            <img width="200" height="200" style="object-fit:cover" src="~/UploadSlider/@item.ImgUrl" />
                                         </td>
                                         <td>
                                             <a class="deleteBtn btn btn-danger" asp-area="Admin" asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                            <button data-id="@item.Id" type="button" class="editBtn btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
-                                                Edit
-                                            </button>
+                                            <a class=" btn btn-success" asp-area="Admin" asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+
+
                                         </td>
                                     </tr>
                                 }
@@ -81,11 +86,9 @@
 
 
     </div>
-</div>
-
-
-
+</div><!-- End Page-content -->
 @section Scripts {
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.min.js"></script>
 
     <script>
@@ -167,5 +170,7 @@
 
         });
 
+
     </script>
+
 }

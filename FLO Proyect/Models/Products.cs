@@ -9,11 +9,14 @@ namespace FLO_Proyect.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
+        public string? ImgUrl { get; set; }
+        public bool Ischeck { get; set; } = true;
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         [ValidateNever]
         public Category Category { get; set; }
-        
+        [NotMapped]
+        public IFormFile ImgFile { get; set; }
 
 
     }

@@ -12,7 +12,7 @@ namespace FLO_Proyect.Controllers
         public HomeController(ILogger<HomeController> logger, AppdbContext _context)
         {
             _logger = logger;
-            context =_context;
+            context = _context;
         }
 
         public IActionResult Index()
@@ -28,8 +28,8 @@ namespace FLO_Proyect.Controllers
 
             //};
 
-         
-            return View(context.Sliders.Where(x=>x.Ischeck!=false).ToList());
+
+            return View(context.Sliders.Where(x => x.Ischeck == true).ToList());
         }
 
         public IActionResult Privacy()

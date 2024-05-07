@@ -13,9 +13,9 @@ namespace FLO_Proyect.Models
         [Required]
         public string Description { get; set; }
         public string? ImgUrl { get; set; }
-        public bool Ischeck { get; set; } = false;
+        public bool Ischeck { get; set; } = true;
         [NotMapped]
         public IFormFile ImgFile { get; set; }
-       
+
     }
 }
