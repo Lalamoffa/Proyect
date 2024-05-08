@@ -1,4 +1,5 @@
 ﻿using FLO_Proyect.Models;
+using FLO_Proyect.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -91,7 +92,12 @@ namespace FLO_Proyect.Controllers
 
         public IActionResult shop()
         {
-            return View("shop");
+            var model = new ShopVM
+            {
+                categoryes = context.Categories.ToList(),
+                products = context.Products.ToList()
+            };
+            return View(model);
 
         }
 

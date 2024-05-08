@@ -13,8 +13,8 @@ namespace FLO_Proyect.Models
 
         public DbSet<Products> Products { get; set; }
         public DbSet<Users> Users { get; set; }
-        public List<Orders> Orders { get; set; }
-        public List<Images> Images { get; set; }
+        public DbSet<Orders> Orders { get; set; }
+        public DbSet<Images> Images { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -56,14 +56,14 @@ namespace FLO_Proyect.Areas.Admin.Controllers
 
             if (model.ImagesFile != null)
             {
-                foreach (var item in model.ImagesFile)
+                foreach (var img in model.ImagesFile)
                 {
-                    if (!item.IsImage())
+                    if (!img.IsImage())
                     {
                         ModelState.AddModelError("Photo", "Image type is not valid");
                         return View(model);
                     }
-                    string filename2 = await item.SaveFileAsync(_env.WebRootPath, "UploadProducts");
+                    string filename2 = await img.SaveFileAsync(_env.WebRootPath, "UploadProducts");
 
                     Images images = new Images
                     {

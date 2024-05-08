@@ -1,4 +1,7 @@
-﻿ <!-- product items banner start -->
+﻿@model ShopVM
+
+
+ <!-- product items banner start -->
 <div class="product-banner">
     <img src="~/img/product/banner.jpg" alt="">
 </div>
@@ -28,10 +31,13 @@
                         </div>
                         <div class="single-sidebar-content">
                             <ul>
-                                <li><a href="#">Klassik (4)</a></li>
-                                <li><a href="#">Sport (6)</a></li>
-                                <li><a href="#">Sandal (1)</a></li>
-                                <li><a href="#">Gündəlik (3)</a></li>
+                               @foreach(var item in Model.categoryes)
+                               {
+                                    <li><a href="#">@item.Name</a></li>
+                                    
+                               }
+                                
+                               
                             </ul>
                         </div>
                     </div>
