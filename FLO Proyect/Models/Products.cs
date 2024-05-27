@@ -10,12 +10,21 @@ namespace FLO_Proyect.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
+        public double? OldPrice { get; set; } = 0;
         public string? ImgUrlBase { get; set; }
         public bool Ischeck { get; set; } = true;
-        public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         [ValidateNever]
+        public int CategoryId { get; set; }
+        [ValidateNever]
+        public List<ColorToProduct> ColorToProducts { get; set; }
+        [ValidateNever]
+        public List<SizeToProduct> SizeToProducts { get; set; }
+        [ValidateNever]
         public Category Category { get; set; }
+        [ValidateNever]
+        public Orders Orders { get; set; }
+
         [NotMapped]
         public IFormFile ImgFile { get; set; }
         [ValidateNever]
@@ -26,6 +35,9 @@ namespace FLO_Proyect.Models
         [NotMapped]
         [ValidateNever]
         public List<IFormFile> ImagesFile { get; set; }
+        [NotMapped]
+        [ValidateNever]
+        public List<int> ColorsId { get; set; }
 
     }
 }

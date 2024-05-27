@@ -1,6 +1,7 @@
 ﻿using FLO_Proyect.Models;
 using FLO_Proyect.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace FLO_Proyect.Controllers
@@ -29,8 +30,13 @@ namespace FLO_Proyect.Controllers
 
             //};
 
+            HomeVM vM = new HomeVM
+            {
+                Products = context.Products.Include(x => x.Images).Where(x => x.Ischeck == true).ToList(),
+                Sliders = context.Sliders.Where(x => x.Ischeck == true).ToList()
+            };
 
-            return View(context.Sliders.Where(x => x.Ischeck == true).ToList());
+            return View(vM);
         }
 
         public IActionResult Privacy()
@@ -94,8 +100,8 @@ namespace FLO_Proyect.Controllers
         {
             var model = new ShopVM
             {
-                categoryes = context.Categories.ToList(),
-                products = context.Products.ToList()
+                categoryes = context.Categories.Where(x => x.Ischeck == true).ToList(),
+                products = context.Products.Include(prd => prd.Images).Where(x => x.Ischeck == true).ToList()
             };
             return View(model);
 

@@ -1,4 +1,9 @@
-﻿@model Products
+﻿@using FLO_Proyect.ViewModel
+@model ProductVM
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.min.css" rel="stylesheet" />
+
+}
 
 <div class="page-content">
     <div class="container-fluid">
@@ -26,39 +31,71 @@
             <div class="col-lg-12">
                 <div class="card job-filter">
                     <div class="card-body p-3">
-                        <form class="row" method="post" enctype="multipart/form-data">
+                        <form asp-controller="Products" asp-action="Edit" class="row" method="post" enctype="multipart/form-data">
+                            <input asp-for="Product.Id" type="hidden" class="form-control" required>
                             @Html.AntiForgeryToken()
                             <div class="col-md-3">
                                 <label>
                                     Title
                                 </label>
-                                <input asp-for="Title" type="text" class="form-control" />
-                                <span asp-validation-for="Title" class="text-danger"></span>
+                                <input asp-for="Product.Title" type="text" class="form-control" />
+                                <span asp-validation-for="Product.Title" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-3">
                                 <label>
                                     Description
                                 </label>
-                                <input asp-for="Description" type="text" class="form-control" />
-                                <span asp-validation-for="Description" class="text-danger"></span>
+                                <input asp-for="Product.Description" type="text" class="form-control" />
+                                <span asp-validation-for="Product.Description" class="text-danger"></span>
                             </div>
 
 
                             <div class="col-md-3">
                                 <label>
-                                    Price
+                                   Current Price
                                 </label>
-                                <input asp-for="Price" type="text" class="form-control" />
-                                <span asp-validation-for="Price" class="text-danger"></span>
+                                <input asp-for="Product.Price" type="text" class="form-control" />
+                                <span asp-validation-for="Product.Price" class="text-danger"></span>
                             </div>
-
+                            <div class="col-md-3">
+                                <label>
+                                    Old Price
+                                </label>
+                                <input asp-for="Product.OldPrice" type="text" class="form-control" />
+                            </div>
                             <div class="col-md-3">
                                 <label>
                                     Category
                                 </label>
-                                <select class="form-select" asp-for="CategoryId">
+                                <select class="form-select" asp-for="Product.CategoryId">
                                     @foreach (var item in ViewBag.Category)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>
+                                    Colors
+                                </label>
+                                <select class="form-select" asp-for="@Model.ColorIds" multiple>
+                                    @foreach (var item in ViewBag.Colors)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>
+                                   Size
+                                </label>
+                                <select class="form-select" asp-for="@Model.SizeIds" multiple>
+                                    @foreach (var item in ViewBag.Size)
                                     {
                                         <option value="@item.Id">@item.Name</option>
                                     }
@@ -70,27 +107,29 @@
                                 <label class="d-block">
                                     Esas sekil
                                 </label>
-                                <img height="200" src="~/UploadProducts/@Model.ImgUrlBase" />
-                                <input type="file" asp-for="ImgUrlBaseFile" class="form-control mt-3" />
+                                <img height="200" src="~/UploadProducts/@Model.Product.ImgUrlBase" />
+                                <input type="file" asp-for="Product.ImgUrlBaseFile" class="form-control mt-3" />
                             </div>
                             <div class="col-md-12">
                                 <label>
                                     Elave sekiller
                                 </label>
                                 <div class="row mb-3">
-                                    @foreach (var item in Model.Images)
+                                    @foreach (var item in Model.Product.Images)
                                     {
                                         <div class="col-md-3">
                                             <img height="200" src="~/UploadProducts/@item.ImgUrl" />
-                                            <a asp-area="Admin" asp-controller="Products" asp-action="DeleteImage" asp-route-id="@item.Id" class="btn btn-danger">Delete </a>
+                                            <a asp-area="Admin" asp-controller="Products" asp-action="DeleteImage" asp-route-id="@Model.Product.Id" class=" deleteBtn btn btn-danger">Delete </a>
                                         </div>
                                     }
-                                </div>
-                                <input type="file" asp-for="ImagesFile" class="form-control" multiple />
+                                </div> 
+                                <input type="file" asp-for="Product.ImagesFile" class="form-control" multiple />
                             </div>
 
+
+
                             <div class="col-md-3">
-                                <button type="submit" class="btn btn-danger mt-3">Add database</button>
+                                <button type="submit" class="btn btn-danger mt-3">Edit</button>
                             </div>
 
                         </form>
@@ -104,3 +143,59 @@
 
     </div>
 </div>
+@section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.min.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+            $(document).on('click', '.deleteBtn', function (e) {
+                e.preventDefault();
+                let url = $(this).attr("href");
+                let element = this.parentElement;
+
+                Swal.fire({
+                    title: 'Silmək istədiyinizdən əminsinizmi?',
+                    text: "Sildikdən sonra geri qaytarmaq mümkün olmayacaq!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sil',
+                    cancelButtonText: 'Geri'
+
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            url: url,
+                            type: "get",
+                            dataType: "json",
+                            success: function (response) {
+                                console.log(response)
+                                if (response.status == 200) {
+                                    Swal.fire(
+                                        'Silindi!',
+                                        '',
+                                        'success'
+                                    )
+                                    element.outerHTML = '';
+                                }
+                                else if (response.status == 400) {
+                                    //toastr.error(response.message)
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        icon: 'error',
+                                        confirmButtonText: 'Cool'
+                                    })
+                                }
+                            }
+                        });
+                    }
+                })
+            });
+        });    
+
+    </script>
+}

@@ -14,6 +14,11 @@ namespace FLO_Proyect.Models
         public DbSet<Products> Products { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<Orders> Orders { get; set; }
+        public DbSet<Size> Sizes { get; set; }
+        public DbSet<Colors> Colors { get; set; }
+        public DbSet<SizeToProduct> SizeToProduct { get; set; }
+        public DbSet<ColorToProduct> ColorToProduct { get; set; }
+
         public DbSet<Images> Images { get; set; }
 
 

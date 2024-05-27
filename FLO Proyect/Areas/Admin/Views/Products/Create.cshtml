@@ -1,4 +1,5 @@
-﻿@model Products
+﻿@using FLO_Proyect.ViewModel
+@model ProductVM
 
 <div class="page-content">
     <div class="container-fluid">
@@ -32,16 +33,16 @@
                                 <label>
                                     Title
                                 </label>
-                                <input asp-for="Title" type="text" class="form-control" />
-                                <span asp-validation-for="Title" class="text-danger"></span>
+                                <input asp-for="@Model.Product.Title" type="text" class="form-control" />
+                                <span asp-validation-for="@Model.Product.Title" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-3">
                                 <label>
                                     Description
                                 </label>
-                                <input asp-for="Description" type="text" class="form-control" />
-                                <span asp-validation-for="Description" class="text-danger"></span>
+                                <input asp-for="@Model.Product.Description" type="text" class="form-control" />
+                                <span asp-validation-for="@Model.Product.Description" class="text-danger"></span>
                             </div>
 
 
@@ -49,8 +50,8 @@
                                 <label>
                                     Price
                                 </label>
-                                <input asp-for="Price" type="text" class="form-control" />
-                                <span asp-validation-for="Price" class="text-danger"></span>
+                                <input asp-for="@Model.Product.Price" type="text" class="form-control" />
+                                <span asp-validation-for="@Model.Product.Price" class="text-danger"></span>
                             </div>
 
 
@@ -58,8 +59,8 @@
                                 <label>
                                     Esas sekil
                                 </label>
-                                <input asp-for="ImgUrlBaseFile" type="file" class="form-control" />
-                                <span asp-validation-for="ImgUrlBaseFile" class="text-danger"></span>
+                                <input asp-for="@Model.Product.ImgUrlBaseFile" type="file" class="form-control" />
+                                <span asp-validation-for="@Model.Product.ImgUrlBaseFile" class="text-danger"></span>
                             </div>
 
 
@@ -67,21 +68,49 @@
                                 <label>
                                     Elave sekiller
                                 </label>
-                                <input asp-for="ImagesFile" type="file" class="form-control" multiple />
+                                <input asp-for="@Model.Product.ImagesFile" type="file" class="form-control" multiple />
                             </div>
 
                             <div class="col-md-3">
                                 <label>
                                     Category
                                 </label>
-                                <select class="form-select" asp-for="CategoryId">
-                                    @foreach(var item in ViewBag.Category)
+                                <select class="form-select" asp-for="@Model.Product.CategoryId">
+                                    @foreach (var item in ViewBag.Category)
                                     {
                                         <option value="@item.Id">@item.Name</option>
                                     }
-                                    
+
                                 </select>
-                            
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>
+                                    Colors
+                                </label>
+                                <select class="form-select" asp-for="@Model.ColorIds" multiple>
+                                    @foreach (var item in ViewBag.Colors)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+
+                                </select>
+                            </div>
+
+
+                            <div class="col-md-3">
+                                <label>
+                                    Size
+                                </label>
+                                <select class="form-select" asp-for="@Model.SizeIds" multiple>
+                                    @foreach (var item in ViewBag.Size)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+
+                                </select>
+                            </div>
+
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-danger mt-3">Add database</button>
                             </div>

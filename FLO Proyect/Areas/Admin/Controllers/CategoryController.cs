@@ -1,10 +1,13 @@
 ﻿using FLO_Proyect.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace FLO_Proyect.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+
     public class CategoryController : Controller
     {
         private readonly AppdbContext appdbContext;
@@ -53,6 +56,26 @@ namespace FLO_Proyect.Areas.Admin.Controllers
             {
                 status = 200
             });
+        }
+
+        [HttpGet]
+        public JsonResult Edit(int id)
+        {
+            var category = appdbContext.Categories.Find(id); // Kategori verilerini veritabanından al
+            return Json(category); // Kategori verilerini JSON formatında dön
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Category model)
+        {
+            // // ViewBag.Category = appDbContext.Categories.ToList();
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            appdbContext.Categories.Update(model);
+            appdbContext.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

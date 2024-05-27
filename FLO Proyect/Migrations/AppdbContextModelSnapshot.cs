@@ -42,6 +42,46 @@ namespace FLOProyect.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("FLO_Proyect.Models.ColorToProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ColorId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ColorToProduct");
+                });
+
+            modelBuilder.Entity("FLO_Proyect.Models.Colors", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Colors");
+                });
+
             modelBuilder.Entity("FLO_Proyect.Models.Images", b =>
                 {
                     b.Property<int>("Id")
@@ -80,7 +120,8 @@ namespace FLOProyect.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -127,6 +168,9 @@ namespace FLOProyect.Migrations
 
                     b.Property<bool>("Ischeck")
                         .HasColumnType("bit");
+
+                    b.Property<double?>("OldPrice")
+                        .HasColumnType("float");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -214,6 +258,46 @@ namespace FLOProyect.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("FLO_Proyect.Models.Size", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sizes");
+                });
+
+            modelBuilder.Entity("FLO_Proyect.Models.SizeToProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SizeId");
+
+                    b.ToTable("SizeToProduct");
                 });
 
             modelBuilder.Entity("FLO_Proyect.Models.Slider", b =>
@@ -401,6 +485,25 @@ namespace FLOProyect.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FLO_Proyect.Models.ColorToProduct", b =>
+                {
+                    b.HasOne("FLO_Proyect.Models.Colors", "Colors")
+                        .WithMany("ColorToProducts")
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FLO_Proyect.Models.Products", "Products")
+                        .WithMany("ColorToProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Colors");
+
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("FLO_Proyect.Models.Images", b =>
                 {
                     b.HasOne("FLO_Proyect.Models.Products", "Products")
@@ -415,8 +518,8 @@ namespace FLOProyect.Migrations
             modelBuilder.Entity("FLO_Proyect.Models.Orders", b =>
                 {
                     b.HasOne("FLO_Proyect.Models.Products", "Products")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
+                        .WithOne("Orders")
+                        .HasForeignKey("FLO_Proyect.Models.Orders", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -440,6 +543,25 @@ namespace FLOProyect.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("FLO_Proyect.Models.SizeToProduct", b =>
+                {
+                    b.HasOne("FLO_Proyect.Models.Products", "Products")
+                        .WithMany("SizeToProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FLO_Proyect.Models.Size", "Size")
+                        .WithMany("SizeToProducts")
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Products");
+
+                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -498,9 +620,26 @@ namespace FLOProyect.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("FLO_Proyect.Models.Colors", b =>
+                {
+                    b.Navigation("ColorToProducts");
+                });
+
             modelBuilder.Entity("FLO_Proyect.Models.Products", b =>
                 {
+                    b.Navigation("ColorToProducts");
+
                     b.Navigation("Images");
+
+                    b.Navigation("Orders")
+                        .IsRequired();
+
+                    b.Navigation("SizeToProducts");
+                });
+
+            modelBuilder.Entity("FLO_Proyect.Models.Size", b =>
+                {
+                    b.Navigation("SizeToProducts");
                 });
 
             modelBuilder.Entity("FLO_Proyect.Models.Users", b =>

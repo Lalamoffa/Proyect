@@ -1,10 +1,13 @@
 ﻿using FLO_Proyect.Extensions;
 using FLO_Proyect.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FLO_Proyect.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+
     public class SliderController : Controller
     {
 

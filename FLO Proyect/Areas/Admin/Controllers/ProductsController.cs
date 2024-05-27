@@ -1,12 +1,17 @@
 ﻿using FLO_Proyect.Extensions;
 using FLO_Proyect.Models;
+using FLO_Proyect.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace FLO_Proyect.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+
     public class ProductsController : Controller
     {
         private readonly AppdbContext appdbContext;
@@ -21,42 +26,46 @@ namespace FLO_Proyect.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            return View(appdbContext.Products.Include(x => x.Category).Where(x => x.Ischeck == true).ToList());
+            return View(appdbContext.Products.Include(x => x.SizeToProducts).Include(x => x.ColorToProducts).Include(x => x.Category).Where(x => x.Ischeck == true).ToList());
+
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Category = appdbContext.Categories.ToList();
+            //ViewBag.Categories = appdbContext.Categories.ToList();
+            //ViewBag.Colors = appdbContext.Colors.ToList();
+            ViewBag.Size = appdbContext.Sizes.ToList();
+
+            var categories = appdbContext.Categories.ToList();
+            ViewBag.Category = categories;
+
+            var colors = appdbContext.Colors.ToList();
+            //var sizes = appdbContext.Sizes.ToList();
+            ViewBag.Colors = colors;
+            //ViewBag.Sizes = sizes;
             return View();
         }
-
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(Products model, object item)
+        public async Task<IActionResult> Create(ProductVM model)
         {
 
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Category = appdbContext.Categories.ToList();
-                return View(model);
-            }
-
-
             //TEK SEKILIN BAZAYA HEMDE PAPKAYA YUKLENMESI
-            if (!model.ImgUrlBaseFile.IsImage())
+            if (!model.Product.ImgUrlBaseFile.IsImage())
             {
                 ModelState.AddModelError("Photo", "Image type is not valid");
                 return View(model);
             }
-            string filename = await model.ImgUrlBaseFile.SaveFileAsync(_env.WebRootPath, "UploadProducts");
+            string filename = await model.Product.ImgUrlBaseFile.SaveFileAsync(_env.WebRootPath, "UploadProducts");
 
-            model.ImgUrlBase = filename;
+            model.Product.ImgUrlBase = filename;
 
-            appdbContext.Products.Add(model);
-            appdbContext.SaveChanges();
+            await appdbContext.Products.AddAsync(model.Product);
+            await appdbContext.SaveChangesAsync();
 
-            if (model.ImagesFile != null)
+            if (model.Product.ImagesFile != null)
             {
-                foreach (var img in model.ImagesFile)
+                foreach (var img in model.Product.ImagesFile)
                 {
                     if (!img.IsImage())
                     {
@@ -67,137 +76,139 @@ namespace FLO_Proyect.Areas.Admin.Controllers
 
                     Images images = new Images
                     {
-                        ProductId = model.Id,
+                        ProductId = model.Product.Id,
                         ImgUrl = filename2
                     };
+                    appdbContext.Images.Add(images);
                 }
             }
-            appdbContext.Products.Add(model);
+            foreach (var colorId in model.ColorIds)
+            {
+                var productColor = new ColorToProduct
+                {
+                    ProductId = model.Product.Id,
+                    ColorId = colorId
+                };
+                appdbContext.ColorToProduct.Add(productColor);
+            }
+
+            foreach (var sizeId in model.SizeIds)
+            {
+                var productSize = new SizeToProduct
+                {
+                    ProductId = model.Product.Id,
+                    SizeId = sizeId
+                };
+                appdbContext.SizeToProduct.Add(productSize);
+            }
             appdbContext.SaveChanges();
             return RedirectToAction("Index");
+
         }
-
-        //public IActionResult Edit(int id)
+        //private IEnumerable<Size> GetSizes()
         //{
-        //    ViewBag.Category = appdbContext.Categories.ToList();
-        //    var model = appdbContext.Products.FirstOrDefault(x => x.Id == id);
-
-        //    return View(model);
+        //    // Mock data or retrieve from the database
+        //    return new List<Size>
+        //{
+        //    new Size { Id = 1, Name =36},
+        //    new Size { Id = 2, Name =37},
+        //    new Size { Id = 3, Name =38}
+        //};
         //}
 
-        //[HttpPost]
-        //public IActionResult Edit(Products products)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(products);
-        //    }
-        //    appdbContext.Products.Update(products);
-        //    appdbContext.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
-
-
-
-        //[HttpGet]
-        //public IActionResult Edit(int id)
-        //{
-        //    if (id == 0)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var model = appdbContext.Products.FirstOrDefault(x => x.Id == id);
-        //    if (model == null)
-        //    {
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(model);
-        //}
-
-
-        //[HttpPost]
-        //public async Task<IActionResult> EditAsync(Products products)
-        //{
-        //    var oldProducts = appdbContext.Products.Find(products.Id);
-        //    //if (!ModelState.IsValid)
-        //    //{
-        //    //    return View(slider);
-        //    //}
-        //    if (products.ImgFile != null)
-        //    {
-
-        //        if (!products.ImgFile.IsImage())
-        //        {
-        //            ModelState.AddModelError("Photo", "Image type is not valid");
-        //            return View(products);
-        //        }
-        //        string filename = await products.ImgFile.SaveFileAsync(_env.WebRootPath, "UploadSlider");
-
-        //        oldProducts.ImgUrl = filename;
-        //    }
-        //    oldProducts.Title = products.Title;
-        //    oldProducts.Description = products.Description;
-        //    oldProducts.Price = products.Price;
-        //    oldProducts.Category = products.Category;
-        //    oldProducts.Ischeck = products.Ischeck;
-
-        //    appdbContext.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
-
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             ViewBag.Category = appdbContext.Categories.ToList();
-            var model = appdbContext.Products.Include(x => x.Images).FirstOrDefault(x => x.Id == id);
+            ViewBag.Colors = appdbContext.Colors.ToList();
+            ViewBag.Size = appdbContext.Sizes.ToList();
+
+
+
+            var colorIds = appdbContext.ColorToProduct.Where(pc => pc.ProductId == id).Select(pc => pc.ColorId).ToList();
+            var sizeIds = appdbContext.SizeToProduct.Where(ps => ps.ProductId == id).Select(ps => ps.SizeId).ToList();
+
+            var products = await appdbContext.Products.Include(x => x.Images).Include(p => p.SizeToProducts).FirstOrDefaultAsync(p => p.Id == id);
+            if (products == null)
+            {
+                return NotFound();
+            }
+
+            var model = new ProductVM()
+            {
+                Product = products,
+                ColorIds = colorIds,
+                SizeIds = sizeIds
+            };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Products productModel)
+        public async Task<IActionResult> Edit(ProductVM model)
         {
-            ViewBag.Category = appdbContext.Categories.ToList();
-            var modelDb = appdbContext.Products.FirstOrDefault(x => x.Id == productModel.Id);
-            modelDb.Title = productModel.Title;
-            modelDb.Price = productModel.Price;
-            modelDb.CategoryId = productModel.CategoryId;
-            modelDb.Description = productModel.Description;
+            //ViewBag.Category = appdbContext.Categories.ToList();
+            var modelDb = appdbContext.Products.Include(x => x.ColorToProducts).Include(x => x.Category).Where(x => x.Ischeck == true).FirstOrDefault(u => u.Id == model.Product.Id);
+            modelDb.Title = model.Product.Title;
+            modelDb.Price = model.Product.Price;
+            modelDb.OldPrice = model.Product.OldPrice;
+            modelDb.CategoryId = model.Product.CategoryId;
+            modelDb.Description = model.Product.Description;
             appdbContext.SaveChanges();
+            var oldColors = appdbContext.ColorToProduct.Where(pc => pc.ProductId == model.Product.Id).ToList();
+            var oldSizes = appdbContext.SizeToProduct.Where(ps => ps.ProductId == model.Product.Id).ToList();
+            appdbContext.ColorToProduct.RemoveRange(oldColors);
+            appdbContext.SizeToProduct.RemoveRange(oldSizes);
+            await appdbContext.SaveChangesAsync();
 
-            if (modelDb == null)
+            foreach (var colorId in model.ColorIds)
             {
-                return RedirectToAction("Index");
+                var productColor = new ColorToProduct
+                {
+                    ProductId = model.Product.Id,
+                    ColorId = colorId
+                };
+                appdbContext.ColorToProduct.Add(productColor);
             }
 
-            if (productModel.ImgUrlBaseFile != null)
+            foreach (var sizeId in model.SizeIds)
             {
-                if (!productModel.ImgUrlBaseFile.IsImage())
+                var productSize = new SizeToProduct
+                {
+                    ProductId = model.Product.Id,
+                    SizeId = sizeId
+                };
+                appdbContext.SizeToProduct.Add(productSize);
+            }
+
+
+            if (model.Product.ImgUrlBaseFile != null)
+            {
+                if (!model.Product.ImgUrlBaseFile.IsImage())
                 {
                     ModelState.AddModelError("Photo", "Image type is not valid");
-                    return View(productModel);
+                    return View(model);
                 }
-                string filename = await productModel.ImgUrlBaseFile.SaveFileAsync(_env.WebRootPath, "UploadProducts");
+                string filename = await model.Product.ImgUrlBaseFile.SaveFileAsync(_env.WebRootPath, "UploadProducts");
 
                 modelDb.ImgUrlBase = filename;
                 appdbContext.SaveChanges();
             }
 
 
-            if (productModel.ImagesFile != null)
+            if (model.Product.ImagesFile != null)
             {
-                foreach (var item in productModel.ImagesFile)
+                foreach (var item in model.Product.ImagesFile)
                 {
                     if (!item.IsImage())
                     {
                         ModelState.AddModelError("Photo", "Image type is not valid");
-                        return View(productModel);
+                        return View(model);
                     }
-                    string filename2 = await item.SaveFileAsync(_env.WebRootPath, "UploadProducts");
+                    string filename2 = await model.Product.ImgFile.SaveFileAsync(_env.WebRootPath, "UploadProducts");
 
                     Images images = new Images
                     {
-                        ProductId = productModel.Id,
+                        ProductId = model.Product.Id,
                         ImgUrl = filename2
                     };
                     appdbContext.Images.Add(images);
@@ -210,7 +221,7 @@ namespace FLO_Proyect.Areas.Admin.Controllers
 
         }
 
-        public IActionResult DeleteImage(int id)
+        public JsonResult DeleteImage(int id)
         {
             if (id != 0)
             {
@@ -218,7 +229,10 @@ namespace FLO_Proyect.Areas.Admin.Controllers
                 appdbContext.Images.Remove(model);
                 appdbContext.SaveChanges();
             }
-            return RedirectToAction("Index");
+            return Json(new
+            {
+                status = 200
+            });
         }
 
 

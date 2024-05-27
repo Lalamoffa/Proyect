@@ -155,9 +155,13 @@
                                    
                                     @if (SignInManager.IsSignedIn(User))
                                     {
+                                 Task<ProgramUser> GetCurrentUserAsync() => UserManager.GetUserAsync(User);
+
+                                     var user = await GetCurrentUserAsync();
+
                                         <span class="dropdown">
                                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Hello @User.Identity.Name
+                                                Hello @user.Email
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                 <li><a class="dropdown-item" style="border" asp-controller="Account" asp-action="Logout">Logout</a></li>
