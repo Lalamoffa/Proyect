@@ -1687,7 +1687,7 @@ body {
 /*----------------------------------------*/
 
 .footer-top-area {
-    background: rgba(0, 0, 0, 0) linear-gradient(90deg, #232222 50%, #1d1d1d 50%) repeat scroll 0 0;
+    background:#232222;
     color: #a8a8a8;
     padding: 40px 0;
 }

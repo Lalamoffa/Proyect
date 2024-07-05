@@ -44,12 +44,10 @@
                         </div>
                         <div class="single-sidebar-content">
                             <ul>
-                                <li><a href="#">Black (2)</a></li>
-                                <li><a href="#">Blue (2)</a></li>
-                                <li><a href="#">Green (4)</a></li>
-                                <li><a href="#">Grey (2)</a></li>
-                                <li><a href="#">Red (2)</a></li>
-                                <li><a href="#">White (2)</a></li>
+                                @foreach(var item in Model.colors)
+                                {
+                                    <li><a href="#">@item.Name</a></li>
+                                }
                             </ul>
                         </div>
                     </div>
@@ -95,6 +93,7 @@
                         </li>
                     </ul>
 
+
                 </div>
                 <div class="row mt-5">
                     <div class="product-content">
@@ -117,11 +116,7 @@
                                                 </div>
                                                 <div class="actions">
                                                     <button type="submit" class="cart-btn" title="Add to cart">add to cart</button>
-                                                    <ul class="add-to-link">
-                                                        <li><a class="modal-view" data-target="#productModal" data-bs-toggle="modal" href="#"> <i class="fa fa-search"></i></a></li>
-                                                        <li><a href="#"> <i class="fa fa-heart-o"></i></a></li>
-                                                        <li><a href="#"> <i class="fa fa-refresh"></i></a></li>
-                                                    </ul>
+                                                   
                                                 </div>
                                                 <div class="product-price">
                                                     <div class="product-name">

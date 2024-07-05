@@ -12,5 +12,6 @@ namespace FLO_Proyect.Areas.Admin.Controllers
         {
             return View();
         }
+
     }
 }

@@ -101,7 +101,8 @@ namespace FLO_Proyect.Controllers
             var model = new ShopVM
             {
                 categoryes = context.Categories.Where(x => x.Ischeck == true).ToList(),
-                products = context.Products.Include(prd => prd.Images).Where(x => x.Ischeck == true).ToList()
+                products = context.Products.Include(prd => prd.Images).Where(x => x.Ischeck == true).ToList(),
+                colors = context.Colors.ToList()
             };
             return View(model);
 
@@ -113,9 +114,9 @@ namespace FLO_Proyect.Controllers
 
         }
 
-        public IActionResult singleproduct()
+        public IActionResult Productdetail()
         {
-            return View("single-product");
+            return View();
         }
 
         public IActionResult wishlist()
